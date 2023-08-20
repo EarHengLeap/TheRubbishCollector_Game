@@ -1,35 +1,28 @@
-/*
- * initalise Phaser framework with width:960px, height:540px
- */
-var game = new Phaser.Game(960, 540, Phaser.AUTO, 'gameContainer', { preload: preload, create: create, update: update });
 
-/*
- * Preload runs before the game starts. Assets such as images and sounds such be preloaded here.
- * A webserver is required to load assets.
- *
- * Also in this function we set game scale so it full browser width.
- */
+var game;
+
+window.onload = function() {
+    game = new Phaser.Game(1080, 570, Phaser.AUTO, 'gameContainer', { preload: preload, create: create, update: update });
+};
+
 function preload() {
 
-    game.load.image('background', 'images/background_city.jpg');
-   
-    // set to scale to full browser width
+    game.load.image('background', 'images/background.png');
+
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.parentIsWindow = true;
-    //set the background color so can confirm the game renders in the browser
-    //this.stage.backgroundColor = '#af6c1e';
-    
 
-    //preload images & sounds
-    // game.load.image('player', 'images/minecraft.png');
     game.load.image('ground', 'images/ground.png');
     game.load.image('platform', 'images/platform.png')
     game.load.image('platform1', 'images/platform1.png')
     game.load.image('experience', 'images/experience.png')
-
     game.load.spritesheet('player-walk', 'images/player-walk.png', 60, 64, 5);
-    // game.load.spritesheet('player-stand', 'images/player-walk.png', 60, 64, 4);
-    //game.load.image('key', 'folder/filename.png');
+
+    game.load.image('canEnemy', 'images/canEnemy.png');
+    game.load.image('gameOverImage', 'images/gameOver.png');
+  
+
+    
 }
 
 /*
@@ -41,15 +34,17 @@ var ground;
 var platform1;
 var score = 0;
 var scoreText;
+var lives = 3;
+var livesText;
 
-/*
- * Create runs once only when Phaser first loads
- * create the game scene by adding objects to the stage
- */
+
 function create() {
     var backgroundImage = game.add.sprite(0, 0, 'background'); // 'background' is the key used in preload
     backgroundImage.width = game.width;
     backgroundImage.height = game.height;
+
+    //set the background image to follower the player
+    backgroundImage.fixedToCamera = true;
 
 	// player = game.add.sprite(480, 340, 'player');
     player = game.add.sprite(480, 340, 'player-walk');
@@ -66,8 +61,12 @@ function create() {
    
     ground = game.add.sprite(0, 500, 'ground');
     game.physics.arcade.enable(ground);
-    ground.body.setSize(960, 20, 0, 0);
+    ground.body.setSize(1080, 20, 0, 0);
     ground.body.immovable = true;
+    
+    ground1 = game.add.sprite(460, 500, 'ground');
+    game.physics.arcade.enable(ground1);
+
 
     platform = game.add.sprite(100, 370, 'platform');
     game.physics.arcade.enable(platform);
@@ -85,26 +84,44 @@ function create() {
     game.physics.arcade.enable(platform3);
     platform3.body.immovable = true;
 
-  
     experience = game.add.sprite(260, 320, 'experience');
     game.physics.arcade.enable(experience);
     experience.body.immovable = true;
+
+    experience1 = game.add.sprite(320, 320, 'experience');
+    game.physics.arcade.enable(experience1);
+    experience1.body.immovable = true;
+
+    canEnemy = game.add.sprite(600, 260, 'canEnemy');
+    game.physics.arcade.enable(canEnemy);
+    canEnemy.body.immovable = true;
+
+    canEnemy1 = game.add.sprite(10, 442, 'canEnemy');
+    game.physics.arcade.enable(canEnemy1);
+    canEnemy1.body.immovable = true;
+
     
-    game.world.setBounds(0, -540*3, 1500, 540*4);
+    game.world.setBounds(0, -540*3, 1080, 540*4);
     game.camera.follow(player);
 
-    scoreText = game.add.text(16,16, 'score: 0', {fontSize: '32px', fill: '#FFFFFF'})
+    scoreText = game.add.text(16, 16, 'Score: 0', { fontSize: '18px', fill: '#FFFFFF', font: 'Arial' });
     scoreText.fixedToCamera = true;
+
+    livesText = game.add.text(game.width - 16, 16, 'Lives: ' + lives, { fontSize: '18px', fill: '#FFFFFF', font: 'Arial' });
+    livesText.anchor.setTo(1, 0);
+    livesText.fixedToCamera = true;
   
 }
 
 
-/*
- * Update runs continuously. Its the game loop function.
- * Add collision detections and control events here
- */
 function update() {
     game.physics.arcade.collide(player, experience, null, onCollision, this);
+    game.physics.arcade.collide(player, experience1, null, onCollision, this);
+
+
+    game.physics.arcade.collide(player, canEnemy, null, onCollision, this);
+    game.physics.arcade.collide(player, canEnemy1, null, onCollision, this);
+
     game.physics.arcade.collide(player, ground);
     game.physics.arcade.collide(player, platform);
     game.physics.arcade.collide(player, platform2);
@@ -134,9 +151,63 @@ function update() {
     }
 }
 
-function onCollision(player, experience) {
-    experience.destroy();
-    score = score + 10;
-    scoreText.text = 'Score: ' + score;
+
+function onCollision(player, sprite) {
+    if (sprite.key === 'experience') {
+        // Player touched the experience sprite
+        sprite.destroy();
+        score += 10;
+        scoreText.text = 'Score: ' + score;
+    } else if (sprite.key === 'canEnemy') {
+        // Player touched the canEnemy sprite
+        sprite.destroy();
+        lives--;
+        livesText.text = 'Lives: ' + lives;
+
+        if (lives === 0) {
+            gameOver();
+        } else {
+            player.reset(480, 340);
+        }
+    }
 }
 
+
+// ...
+
+function gameOver() {
+    // Game over logic
+    // For example, you can display a game over image and restart the game
+    var gameOverImage = game.add.sprite(0, 0, 'gameOverImage');
+    gameOverImage.anchor.setTo(0.5); // Set the anchor point to the center of the image
+    gameOverImage.scale.setTo(0.2); // Adjust the scale as needed
+    gameOverImage.fixedToCamera = true;
+    gameOverImage.cameraOffset.setTo(game.camera.view.centerX, game.camera.view.centerY);
+
+    // Add a window resize event listener
+    window.addEventListener('resize', function() {
+        // Update the camera offset when the window is resized
+        gameOverImage.cameraOffset.setTo(game.camera.view.centerX, game.camera.view.centerY);
+    });
+
+    // Hide the game over image after 2 seconds
+    game.time.events.add(Phaser.Timer.SECOND * 2, function() {
+        gameOverImage.destroy();
+        restartGame();
+    }, this);
+}
+
+// ...
+
+// ...
+
+function restartGame() {
+    // Reset the game
+    score = 0;
+    lives = 3;
+    scoreText.text = 'Score: ' + score;
+    livesText.text = 'Lives: ' + lives;
+    player.reset(480, 340);
+    create(experience, canEnemy);
+    // Reset any other game elements as needed
+}
