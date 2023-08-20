@@ -1,4 +1,3 @@
-
 var game;
 
 window.onload = function() {
@@ -7,28 +6,22 @@ window.onload = function() {
 
 function preload() {
 
-    game.load.image('background', 'images/background.png');
+    game.load.image('background', 'assets/img/background.jpg');
 
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.parentIsWindow = true;
 
-    game.load.image('ground', 'images/ground.png');
-    game.load.image('platform', 'images/platform.png')
-    game.load.image('platform1', 'images/platform1.png')
-    game.load.image('experience', 'images/experience.png')
-    game.load.spritesheet('player-walk', 'images/player-walk.png', 60, 64, 5);
+    game.load.image('ground', 'assets/img/ground.png');
+    game.load.image('platform', 'assets/img/platform.png')
+    game.load.image('platform1', 'assets/img/platform1.png')
+    game.load.image('experience', 'assets/img/experience.png')
+    game.load.spritesheet('player-walk', 'assets/img/player-walk.png', 60, 64, 5);
 
-    game.load.image('canEnemy', 'images/canEnemy.png');
-    game.load.image('gameOverImage', 'images/gameOver.png');
-  
-
-    
+    game.load.image('canEnemy', 'assets/img/canEnemy.png');
+    game.load.image('gameOverImage', 'assets/img/gameOver.png');  
 }
 
-/*
-* Add game variables here
-*
-*/
+
 var player;
 var ground;
 var platform1;
