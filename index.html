@@ -1,14 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="stylesheet/game.css">
     <script src="lib/phaser.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('assets/img/angkorWat-Start.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .title-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    
+    .title {
+      font-family: 'Arial', sans-serif;
+      font-size: 4rem;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      position: relative;
+      color: #000;
+      transform: perspective(500px) rotateX(-20deg);
+      margin-bottom: 5rem;
+    }
+    
+    .button {
+      font-family: 'Arial', sans-serif;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 1rem 2rem;
+      background-color: #FFF;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    
+    .button:hover {
+      background-color: #000;
+      color: #FFF;
+    }
+    
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div id="gameContainer"></div>
-    <script src="lib/Game.js"></script>
+  <div class="title-container">
+    <h1 class="title">The Rubbish Collector</h1>
+    <button id="newGameButton" class="button">New Game</button>
+    <button class="button">Stats</button>
+    <button class="button">About</button>
+  </div>
+  <div id="gameContainer"></div>
+
+  <script>
+    document.getElementById("newGameButton").addEventListener("click", function() {
+    // Hide the title container
+    document.querySelector(".title-container").classList.add("hidden");
+    
+    // Hide the background image
+    document.body.style.backgroundImage = "none";
+    
+    // Load the Game.js file dynamically
+    var script = document.createElement("script");
+    script.src = "Game.js";
+    document.head.appendChild(script);
+    });
+  </script>
+  <script src="lib/Game.js"></script>
 </body>
 </html>
