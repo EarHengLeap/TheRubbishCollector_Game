@@ -1,87 +1,140 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="lib/phaser.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-image: url('assets/img/angkorWat-Start.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      height: 100vh;
-      overflow: hidden;
-    }
+  <title>The Rubbish Collector</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('assets/img/angkorWat-Start.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            overflow: hidden;
+        }
     
-    .title-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
+        .title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
     
-    .title {
-      font-family: 'Arial', sans-serif;
-      font-size: 4rem;
-      font-weight: bold;
-      text-align: center;
-      text-transform: uppercase;
-      position: relative;
-      color: #000;
-      transform: perspective(500px) rotateX(-20deg);
-      margin-bottom: 5rem;
-    }
+        .title {
+            font-family: 'Arial', sans-serif;
+            font-size: 4rem;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            position: relative;
+            color: #000;
+            transform: perspective(500px) rotateX(-20deg);
+            margin-bottom: 5rem;
+        }
     
-    .button {
-      font-family: 'Arial', sans-serif;
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      text-align: center;
-      padding: 1rem 2rem;
-      background-color: #FFF;
-      color: #000;
-      border: none;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-      cursor: pointer;
-    }
+        .button {
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 1rem 2rem;
+            background-color: #FFF;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
     
-    .button:hover {
-      background-color: #000;
-      color: #FFF;
-    }
+        .button:hover {
+            background-color: #000;
+            color: #FFF;
+        }
     
-    .hidden {
-      display: none;
-    }
-  </style>
+        .hidden {
+            display: none;
+        }
+    
+        .loading-bar {
+            width: 500px;
+            height: 25px;
+            background-color: #000;
+            margin: 0 auto; /* Center the loading bar horizontally */
+            margin-bottom: 1rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+    
+        .loading-progress {
+            height: 100%;
+            background-color: rgb(60, 255, 0);
+            width: 0;
+            transition: width 0.5s ease-in-out;
+            border-radius: 50px;
+        }
+        
+        .loading-text {
+            font-family: 'Arial', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            color: #FFF;
+            margin-top: 5px;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 </head>
 <body>
-  <div class="title-container">
+<div class="title-container">
     <h1 class="title">The Rubbish Collector</h1>
     <button id="newGameButton" class="button">New Game</button>
     <button class="button">Stats</button>
     <button class="button">About</button>
-  </div>
-  <div id="gameContainer"></div>
+</div>
 
-  <script>
-    document.getElementById("newGameButton").addEventListener("click", function() {
-    // Hide the title container
-    document.querySelector(".title-container").classList.add("hidden");
-    
-    // Hide the background image
-    document.body.style.backgroundImage = "none";
-    
-    // Load the Game.js file dynamically
-    var script = document.createElement("script");
-    script.src = "Game.js";
-    document.head.appendChild(script);
-    });
-  </script>
-  <script src="lib/Game.js"></script>
+<div id="gameContainer"></div>
+<div id="loadingContainer" class="hidden">
+    <div class="loading-bar">
+        <div id="loadingProgress" class="loading-progress"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+</div>
+
+<script>
+  document.getElementById("newGameButton").addEventListener("click", function() {
+      // Hide the title container
+      document.querySelector(".title-container").classList.add("hidden");
+      // Show the loading bar
+      document.getElementById("loadingContainer").classList.remove("hidden");
+      
+      // Simulate the loading progress
+      var loadingProgress = document.getElementById("loadingProgress");
+      var percentLoaded = 0;
+      var interval = setInterval(function() {
+          if (percentLoaded >= 100) {
+              clearInterval(interval);
+              // Hide the loading bar
+              document.getElementById("loadingContainer").classList.add("hidden");
+
+              // Redirect to game.html
+              window.location.href = "game.html";
+
+              return;
+          }
+          percentLoaded += 10;
+          loadingProgress.style.width = percentLoaded + "%";
+      }, 500);
+  });
+</script>
 </body>
 </html>
