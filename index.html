@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>The Rubbish Collector</title>
+  <link rel="icon" type="image/png" href="assets/img/icon.png">
   <style>
     body {
         margin: 0;
@@ -127,6 +128,7 @@
     <button id="newGameButton" class="button">New Game</button>
     <button class="button">Stats</button>
     <button class="button">About</button>
+    <button id="musicButton" class="button">Turn OFF Music</button>
   </div>
 
   <div id="gameContainer"></div>
@@ -136,14 +138,32 @@
       <div class="loading-text">Loading...</div>
     </div>
   </div>
-
+  <audio id="intro" src="assets/fx/intro.mp3"></audio>
+  <audio src="backgroundMusic" src="assets/fx/background_game.mp3" loop></audio>
   <script>
+    var musicButton = document.getElementById("musicButton");
+    var intro = document.getElementById("intro");
+    var backgroundMusic = new Audio("assets/fx/background_game.mp3"); // Create a new Audio object for the background music
+  
+    // Event listener for the music button
+    musicButton.addEventListener("click", function() {
+      if (intro.paused) {
+        intro.play();
+        backgroundMusic.play(); // Start playing the background music
+        musicButton.textContent = "Turn On Music";
+      } else {
+        intro.pause();
+        backgroundMusic.pause(); // Pause the background music
+        musicButton.textContent = "Turn Off Music";
+      }
+    });
+  
     document.getElementById("newGameButton").addEventListener("click", function() {
       // Hide the title container
       document.querySelector(".title-container").classList.add("hidden");
       // Show the loading bar
       document.getElementById("loadingContainer").classList.remove("hidden");
-
+  
       // Simulate the loading progress
       var loadingProgress = document.getElementById("loadingProgress");
       var percentLoaded = 0;
@@ -152,13 +172,13 @@
           clearInterval(interval);
           // Hide the loading bar
           document.getElementById("loadingContainer").classList.add("hidden");
-
+  
           // Redirect to game.html
           window.location.href = "game.html";
-
+  
           return;
         }
-       percentLoaded += 30;
+        percentLoaded += 30;
         loadingProgress.style.width = percentLoaded + "%";
       }, 600);
     });
